@@ -1,0 +1,126 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  CloudArch AI — Cognito User Pool + App Client
+  Phase 2: Authentication Infrastructure
+
+Parameters:
+  AppName:
+    Type: String
+    Default: cloudarch-ai
+    Description: Application name prefix
+  UserPoolDomain:
+    Type: String
+    Default: cloudarch-ai-auth
+    Description: Unique Cognito hosted UI domain prefix (must be globally unique)
+
+Resources:
+
+  # ── User Pool ────────────────────────────────────────────────────────────────
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub '${AppName}-user-pool'
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+        - Name: name
+          AttributeDataType: String
+          Required: false
+          Mutable: true
+      UserPoolAddOns:
+        AdvancedSecurityMode: AUDIT
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailSubject: 'CloudArch AI - Verify your email'
+        EmailMessage: 'Your CloudArch AI verification code is {####}'
+      EmailConfiguration:
+        EmailSendingAccount: COGNITO_DEFAULT
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+
+  # ── App Client (SPA — no client secret) ──────────────────────────────────────
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub '${AppName}-spa-client'
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false   # SPA — no client secret
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+      SupportedIdentityProviders:
+        - COGNITO
+      CallbackURLs:
+        - http://localhost:5173/dashboard
+      LogoutURLs:
+        - http://localhost:5173/
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      AllowedOAuthFlowsUserPoolClient: true
+      PreventUserExistenceErrors: ENABLED
+      EnableTokenRevocation: true
+      AccessTokenValidity: 1       # hours
+      IdTokenValidity: 1           # hours
+      RefreshTokenValidity: 30     # days
+      TokenValidityUnits:
+        AccessToken: hours
+        IdToken: hours
+        RefreshToken: days
+
+  # ── Hosted UI Domain ─────────────────────────────────────────────────────────
+  UserPoolDomainResource:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref UserPoolDomain
+      UserPoolId: !Ref UserPool
+
+Outputs:
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref UserPool
+    Export:
+      Name: !Sub '${AppName}-UserPoolId'
+
+  UserPoolClientId:
+    Description: Cognito App Client ID (use in frontend .env)
+    Value: !Ref UserPoolClient
+    Export:
+      Name: !Sub '${AppName}-UserPoolClientId'
+
+  UserPoolArn:
+    Description: User Pool ARN
+    Value: !GetAtt UserPool.Arn
+
+  CognitoHostedUIDomain:
+    Description: Cognito hosted UI domain
+    Value: !Sub '${UserPoolDomain}.auth.${AWS::Region}.amazoncognito.com'
+
+  IssuerURL:
+    Description: JWT Issuer URL (use in backend .env as reference)
+    Value: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}'
+
+  JWKSEndpoint:
+    Description: JWKS endpoint for JWT verification
+    Value: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}/.well-known/jwks.json'

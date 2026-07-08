@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-surface-700;
+  }
+  body {
+    @apply bg-surface-950 text-white font-sans antialiased;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-700 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm
+      bg-gradient-to-r from-brand-500 to-brand-600 text-white
+      hover:from-brand-400 hover:to-brand-500
+      active:scale-95 transition-all duration-200
+      shadow-lg shadow-brand-500/25
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm
+      bg-surface-800 text-white border border-surface-700
+      active:scale-95 transition-all duration-200
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary:hover {
+    background-color: #334155;
+    border-color: #475569;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
+      text-surface-200 hover:text-white hover:bg-surface-800
+      active:scale-95 transition-all duration-200;
+  }
+  .card {
+    @apply bg-surface-900 border border-surface-700/50 rounded-2xl p-6
+      shadow-xl shadow-black/20;
+  }
+  .card-hover {
+    @apply card transition-all duration-300 cursor-pointer;
+  }
+  .card-hover:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.1);
+  }
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl;
+  }
+  .input {
+    @apply w-full px-4 py-3 rounded-xl bg-surface-800 border border-surface-700
+      text-white placeholder-surface-200/50 text-sm
+      focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+      transition-all duration-200;
+  }
+  .label {
+    @apply block text-sm font-medium text-surface-200 mb-1.5;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .badge-startup {
+    @apply badge bg-green-500/20 text-green-400 border border-green-500/30;
+  }
+  .badge-production {
+    @apply badge bg-blue-500/20 text-blue-400 border border-blue-500/30;
+  }
+  .badge-enterprise {
+    @apply badge bg-purple-500/20 text-purple-400 border border-purple-500/30;
+  }
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-purple-400;
+  }
+  .section-title {
+    @apply text-2xl font-display font-bold text-white;
+  }
+  .divider {
+    @apply border-t border-surface-800;
+  }
+}
+
+@layer utilities {
+  .glow {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
+  }
+  .glow-sm {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+  }
+}
+
+/* React Flow overrides */
+.react-flow__background {
+  background-color: #020617 !important;
+}
+.react-flow__attribution {
+  display: none;
+}
+.react-flow__edge-path {
+  stroke-width: 2;
+}
