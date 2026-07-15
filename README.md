@@ -14,7 +14,7 @@ A modern stack designed for high availability, security, and responsive user exp
 | | State Management | Zustand | Lightweight global store for auth sessions and state caching. |
 | **Backend** | REST API | FastAPI (Python 3.11) | High-performance, asynchronous endpoints with Pydantic type safety. |
 | | Database ORM | SQLAlchemy + Alembic | Async engine with automated database schema migrations. |
-| **AI** | Generation Model | Google Gemini 2.5 Flash | Structured JSON output parser for architecture schema compilation. |
+| **AI** | Generation Model | Google Generative AI API | Structured JSON output parser for architecture schema compilation. |
 | **Database** | Database Engine | PostgreSQL (Supabase) | Multi-tenant relational storage secured with Row Level Security (RLS). |
 
 ---
@@ -38,7 +38,7 @@ The application is designed to run natively on the AWS ecosystem and generates a
 │   │   ├── models/           # SQLAlchemy schemas (Projects, Architectures)
 │   │   ├── routes/           # REST endpoints (Projects, Health)
 │   │   ├── schemas/          # Pydantic schemas (validation layer)
-│   │   ├── services/         # Third-party integrations (Gemini, S3, Diagram Builder)
+│   │   ├── services/         # Third-party integrations (AI Engine, S3, Diagram Builder)
 │   │   ├── config.py         # Application settings (Pydantic BaseSettings)
 │   │   └── database.py       # Async engine configuration
 │   ├── alembic/              # DB migration logs
